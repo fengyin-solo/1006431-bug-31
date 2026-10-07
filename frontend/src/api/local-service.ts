@@ -1,5 +1,6 @@
 import { MODULE_BY_KEY } from '@/data/modules'
 import { allRows, listRows, resetRows, saveRows } from '@/data/local-store'
+import { listReplenishEntries, spareStats } from '@/data/spare/service'
 import type { ActionResult, EntryRow, ModuleMeta, OverviewResult, PageResult } from '@/data/types'
 
 // 会写进数据的「往回走」动作：命中就把这条记录标成异常态，看板上能一眼看出来。
@@ -86,7 +87,20 @@ export function downloadEntries(key: string): void {
 
 export function loadOverview(): OverviewResult {
   const rows = allRows()
+  const spare = spareStats()
+  const openReplenish = listReplenishEntries().filter((entry) => entry.status === '预警中').length
   const modules = [...MODULE_BY_KEY.values()].map((meta) => {
+    // 备件走专属数据域：列表、详情、补货台账是同一份落库记录，
+    // 概览必须从这一份取，不能再用通用行表，避免两个数。
+    if (meta.key === 'spare') {
+      return {
+        name: meta.name,
+        created:
+          spare.onHandCount + spare.lowStockCount + spare.issuedCount + spare.pendingInboundCount + spare.scrappedCount,
+        pending: openReplenish + spare.pendingInboundCount,
+        abnormal: spare.scrappedCount,
+      }
+    }
     const entries = rows[meta.key] ?? []
     return {
       name: meta.name,

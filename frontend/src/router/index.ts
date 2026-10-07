@@ -14,6 +14,7 @@ const Leachate = () => import('@/views/leachate/index.vue')
 const Equipcheck = () => import('@/views/equipcheck/index.vue')
 const Overhaul = () => import('@/views/overhaul/index.vue')
 const Spare = () => import('@/views/spare/index.vue')
+const SpareDetail = () => import('@/views/spare/detail.vue')
 const Powerstat = () => import('@/views/powerstat/index.vue')
 const Emission = () => import('@/views/emission/index.vue')
 const Shift = () => import('@/views/shift/index.vue')
@@ -37,6 +38,7 @@ const router = createRouter({
     { path: '/equipcheck', name: 'equipcheck', component: Equipcheck },
     { path: '/overhaul', name: 'overhaul', component: Overhaul },
     { path: '/spare', name: 'spare', component: Spare },
+    { path: '/spare/:code', name: 'spare-detail', component: SpareDetail },
     { path: '/powerstat', name: 'powerstat', component: Powerstat },
     { path: '/emission', name: 'emission', component: Emission },
     { path: '/shift', name: 'shift', component: Shift },
